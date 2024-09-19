@@ -108,11 +108,13 @@ setup(
     url=URL,
     download_url=f"{URL}/archive/gsplat-{__version__}.tar.gz",
     python_requires=">=3.7",
+    setup_requires=['cython'],
     install_requires=[
         "jaxtyping",
         "rich>=12",
         "torch",
         "typing_extensions; python_version<'3.8'",
+        "cython"
     ],
     extras_require={
         # dev dependencies. Install them by `pip install gsplat[dev]`

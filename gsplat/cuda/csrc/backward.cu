@@ -693,6 +693,8 @@ __global__ void rasterize_video_backward_kernel(
 //     }
 // }
 
+
+// TODO: account for the derivaties of the the opacity
 __global__ void rasterize_backward_sum_kernel(
     const dim3 tile_bounds,
     const dim3 img_size,

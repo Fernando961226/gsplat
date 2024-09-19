@@ -596,7 +596,10 @@ __global__ void rasterize_forward_sum(
             const float sigma = 0.5f * (conic.x * delta.x * delta.x +
                                         conic.z * delta.y * delta.y) +
                                 conic.y * delta.x * delta.y;
-            const float alpha = min(1.f, opac * __expf(-sigma));
+            // the following equation makes such that the maximun value is 1 
+            const float alpha = min(1.f, opac * __expf(-sigma)); 
+
+            // TODO: need to allow negatives
             if (sigma < 0.f || alpha < 1.f / 255.f) {
                 continue;
             }
