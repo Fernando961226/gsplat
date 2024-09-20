@@ -801,8 +801,9 @@ __global__ void rasterize_backward_sum_kernel(
                                             conic.z * delta.y * delta.y) +
                                     conic.y * delta.x * delta.y;
                 vis = __expf(-sigma);
-                alpha = min(1.f, opac * vis);
-                if (sigma < 0.f || alpha < 1.f / 255.f) {
+                alpha = max(-1.f, min(1.f, opac * vis));
+                
+                if (sigma < 0.f){ //} || abs(alpha) < 1.f / 255.f) {
                     valid = 0;
                 }
             }
