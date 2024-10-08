@@ -787,11 +787,19 @@ __global__ void rasterize_backward_sum_kernel(
             if (batch_end - t > bin_final) {
                 valid = 0;
             }
-            float alpha;
+
+            // Declare variables outside the if block
+
+            float alpha_raw;
+            float alpha ;
             float opac;
-            float2 delta;
+            float3 delta;
             float3 conic;
             float vis;
+            float d_clamp;
+            float sigma;
+
+
             if(valid){
                 conic = conic_batch[t];
                 float3 xy_opac = xy_opacity_batch[t];
@@ -800,10 +808,17 @@ __global__ void rasterize_backward_sum_kernel(
                 float sigma = 0.5f * (conic.x * delta.x * delta.x +
                                             conic.z * delta.y * delta.y) +
                                     conic.y * delta.x * delta.y;
+                                    
                 vis = __expf(-sigma);
-                alpha = max(-1.f, min(1.f, opac * vis));
-                
-                if (sigma < 0.f){ //} || abs(alpha) < 1.f / 255.f) {
+                alpha_raw = opac * vis;
+
+                alpha = max(-1.f, min(1.f, alpha_raw));
+
+                // Determine if alpha is clamped
+
+                float d_clamp = (alpha_raw > -1.f && alpha_raw < 1.f) ? 1.f : 0.f;
+
+                if (sigma < 0.f || d_clamp == 0.f) {
                     valid = 0;
                 }
             }
